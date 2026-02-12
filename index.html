@@ -2,19 +2,19 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<title>Proyecto Final - Modelo SIR y Cuadráticas</title>
+<title>Proyecto Final Matemáticas</title>
 
 <style>
 body{
     margin:0;
     font-family:'Segoe UI',sans-serif;
-    background:linear-gradient(135deg,#1f1c2c,#928dab);
+    background:linear-gradient(135deg,#1d2b64,#f8cdda);
     color:white;
     text-align:center;
 }
 
 header{
-    padding:25px;
+    padding:30px;
     background:rgba(0,0,0,0.4);
 }
 
@@ -22,7 +22,7 @@ section{
     margin:30px auto;
     padding:25px;
     width:85%;
-    background:rgba(255,255,255,0.1);
+    background:rgba(255,255,255,0.12);
     border-radius:15px;
 }
 
@@ -31,7 +31,7 @@ h2{
 }
 
 button{
-    padding:10px 20px;
+    padding:10px 18px;
     border:none;
     border-radius:8px;
     cursor:pointer;
@@ -44,14 +44,13 @@ input{
     padding:6px;
     border-radius:5px;
     border:none;
-    width:80px;
+    width:100px;
     text-align:center;
 }
 
 .resultado{
-    margin-top:20px;
-    font-size:17px;
-    line-height:1.6;
+    margin-top:15px;
+    font-size:16px;
 }
 </style>
 </head>
@@ -63,28 +62,82 @@ input{
 <p>Proyecto Final</p>
 </header>
 
+<!-- INFORMACIÓN TEÓRICA -->
+
 <section>
-<h2>Modelo SIR - Resolución Paso a Paso</h2>
+<h2>¿Qué son las Enfermedades Infecciosas?</h2>
+<p>
+Las enfermedades infecciosas son causadas por microorganismos como virus,
+bacterias o parásitos. Se transmiten de una persona a otra por contacto
+directo, aire, agua o superficies contaminadas.
+</p>
 
-<p><b>Ingresa los datos:</b></p>
-
-S = <input type="number" id="S" value="990">
-I = <input type="number" id="I" value="10">
-R = <input type="number" id="R" value="0">
-<br><br>
-β = <input type="number" step="0.1" id="beta" value="0.3">
-γ = <input type="number" step="0.1" id="gamma" value="0.1">
-<br><br>
-Población total N = <input type="number" id="N" value="1000">
-
-<br><br>
-<button onclick="resolverSIR()">Resolver Paso a Paso</button>
-
-<div id="sirResultado" class="resultado"></div>
+<p>
+La propagación depende de factores como la tasa de contagio,
+la inmunidad de la población y la velocidad de recuperación.
+Por eso se utilizan modelos matemáticos que permiten predecir
+cómo evoluciona una epidemia.
+</p>
 </section>
 
 <section>
-<h2>Ecuaciones Cuadráticas - Paso a Paso</h2>
+<h2>¿Qué es el Modelo SIR?</h2>
+<p>
+El modelo SIR es un modelo matemático que divide la población en tres grupos:
+</p>
+
+<p>
+<b>S (Susceptibles):</b> Personas sanas que pueden contagiarse. <br>
+<b>I (Infectados):</b> Personas que tienen la enfermedad y pueden contagiar. <br>
+<b>R (Recuperados):</b> Personas que se recuperaron y ya no contagian.
+</p>
+
+<p>
+La población cambia de S → I → R según dos parámetros:
+</p>
+
+<p>
+β = tasa de contagio <br>
+γ = tasa de recuperación
+</p>
+</section>
+
+<!-- EJEMPLO RESUELTO -->
+
+<section>
+<h2>Ejemplo Resuelto Paso a Paso</h2>
+
+<button onclick="mostrarEjemplo()">Mostrar Ejemplo</button>
+
+<div id="ejemplo" class="resultado"></div>
+</section>
+
+<!-- EJERCICIO INTERACTIVO SIR -->
+
+<section>
+<h2>Ejercicio: Resuelve el Modelo SIR</h2>
+
+<p>Datos:</p>
+S = 900 &nbsp;
+I = 100 &nbsp;
+R = 0 &nbsp;
+β = 0.2 &nbsp;
+γ = 0.1 &nbsp;
+N = 1000
+
+<p>Calcula el nuevo valor de Infectados después de un periodo.</p>
+
+<input type="number" id="respuestaSIR" placeholder="Resultado">
+<br>
+<button onclick="verificarSIR()">Verificar</button>
+
+<div id="resultadoSIR" class="resultado"></div>
+</section>
+
+<!-- ECUACIONES CUADRÁTICAS -->
+
+<section>
+<h2>Ecuaciones Cuadráticas</h2>
 
 <h3 id="ecuacion"></h3>
 
@@ -101,49 +154,50 @@ Población total N = <input type="number" id="N" value="1000">
 <div id="resultado" class="resultado"></div>
 
 <button onclick="generarEjercicio()">Nuevo Ejercicio</button>
-
 </section>
 
 <script>
 
-// -------- MODELO SIR PASO A PASO --------
+// -------- EJEMPLO SIR --------
 
-function resolverSIR(){
+function mostrarEjemplo(){
 
-let S = parseFloat(document.getElementById("S").value);
-let I = parseFloat(document.getElementById("I").value);
-let R = parseFloat(document.getElementById("R").value);
-let beta = parseFloat(document.getElementById("beta").value);
-let gamma = parseFloat(document.getElementById("gamma").value);
-let N = parseFloat(document.getElementById("N").value);
+let S=990, I=10, R=0, beta=0.3, gamma=0.1, N=1000;
 
-let nuevosInfectados = beta * S * I / N;
-let nuevosRecuperados = gamma * I;
+let nuevosInf = beta*S*I/N;
+let nuevosRec = gamma*I;
 
-let nuevoS = S - nuevosInfectados;
-let nuevoI = I + nuevosInfectados - nuevosRecuperados;
-let nuevoR = R + nuevosRecuperados;
+let nuevoI = I + nuevosInf - nuevosRec;
 
-document.getElementById("sirResultado").innerHTML =
+document.getElementById("ejemplo").innerHTML =
+"Paso 1: Nuevos infectados = β×S×I/N = " + nuevosInf.toFixed(2) +
+"<br>Paso 2: Nuevos recuperados = γ×I = " + nuevosRec.toFixed(2) +
+"<br>Paso 3: I nuevo = I + nuevos infectados − recuperados" +
+"<br>I nuevo = " + nuevoI.toFixed(2);
+}
 
-"<b>Paso 1: Nuevos infectados</b><br>" +
-"β × S × I / N = " + beta + " × " + S + " × " + I + " / " + N +
-"<br>= " + nuevosInfectados.toFixed(2) +
 
-"<br><br><b>Paso 2: Nuevos recuperados</b><br>" +
-"γ × I = " + gamma + " × " + I +
-"<br>= " + nuevosRecuperados.toFixed(2) +
+// -------- EJERCICIO SIR --------
 
-"<br><br><b>Paso 3: Actualizar valores</b><br>" +
-"S nuevo = " + S + " - " + nuevosInfectados.toFixed(2) +
-" = " + nuevoS.toFixed(2) +
+function verificarSIR(){
 
-"<br>I nuevo = " + I + " + " + nuevosInfectados.toFixed(2) +
-" - " + nuevosRecuperados.toFixed(2) +
-" = " + nuevoI.toFixed(2) +
+let S=900, I=100, beta=0.2, gamma=0.1, N=1000;
 
-"<br>R nuevo = " + R + " + " + nuevosRecuperados.toFixed(2) +
-" = " + nuevoR.toFixed(2);
+let nuevosInf = beta*S*I/N;
+let nuevosRec = gamma*I;
+
+let correcto = I + nuevosInf - nuevosRec;
+
+let user = parseFloat(document.getElementById("respuestaSIR").value);
+
+if(Math.abs(user - correcto) < 1){
+document.getElementById("resultadoSIR").innerHTML =
+"<span style='color:lightgreen;'>Correcto ✅</span>";
+}else{
+document.getElementById("resultadoSIR").innerHTML =
+"<span style='color:red;'>Incorrecto ❌</span><br>Resultado correcto: "
++ correcto.toFixed(2);
+}
 }
 
 
@@ -178,12 +232,8 @@ document.getElementById("respuesta").value = "";
 function mostrarPasos(){
 
 document.getElementById("pasos").innerHTML =
-"<b>Paso 1:</b> a=" + a + ", b=" + b + ", c=" + c +
-
-"<br><br><b>Paso 2:</b> Δ = b² - 4ac = " + disc +
-
-"<br><br><b>Paso 3:</b> x = (-b ± √Δ)/2a" +
-
+"a=" + a + ", b=" + b + ", c=" + c +
+"<br>Δ = " + disc +
 "<br>x₁ = " + sol1.toFixed(2) +
 "<br>x₂ = " + sol2.toFixed(2);
 }
