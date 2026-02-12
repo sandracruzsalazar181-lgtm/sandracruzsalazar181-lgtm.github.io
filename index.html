@@ -1,40 +1,49 @@
-
 <!DOCTYPE html>
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<title>Plataforma Interactiva - Sandra</title>
+<title>Proyecto Final - Modelo Matemático</title>
 
 <style>
 body{
-    font-family: Arial, sans-serif;
-    background:#0f172a;
-    color:white;
     margin:0;
+    font-family: 'Segoe UI', sans-serif;
+    background: linear-gradient(135deg,#0f2027,#203a43,#2c5364);
+    color:white;
     text-align:center;
 }
 
 header{
-    background:#1e293b;
-    padding:25px;
+    padding:30px;
+    background:rgba(0,0,0,0.4);
 }
 
 section{
     margin:30px auto;
-    padding:20px;
-    width:80%;
-    background:#1e293b;
-    border-radius:12px;
+    padding:25px;
+    width:85%;
+    background:rgba(255,255,255,0.08);
+    border-radius:15px;
+    backdrop-filter: blur(10px);
+    box-shadow:0 0 20px rgba(0,0,0,0.4);
+}
+
+h2{
+    color:#00e5ff;
 }
 
 button{
     padding:10px 20px;
-    margin-top:10px;
+    margin:10px;
     border:none;
     border-radius:8px;
     cursor:pointer;
-    background:#38bdf8;
     font-weight:bold;
+    background:#00e5ff;
+}
+
+button:hover{
+    background:#00bcd4;
 }
 
 input{
@@ -44,15 +53,20 @@ input{
     text-align:center;
 }
 
-#resultado{
+.slider{
+    width:200px;
+}
+
+.resultado{
     margin-top:15px;
     font-weight:bold;
+    font-size:18px;
 }
 
 footer{
-    background:#111827;
-    padding:20px;
     margin-top:40px;
+    padding:20px;
+    background:rgba(0,0,0,0.5);
 }
 </style>
 </head>
@@ -60,44 +74,69 @@ footer{
 <body>
 
 <header>
-<h1>Plataforma Interactiva de Matemáticas y Salud</h1>
-<p>Proyecto educativo</p>
+<h1>Modelación Matemática de Enfermedades Infecciosas</h1>
+<p>Proyecto Final de Matemáticas</p>
 </header>
 
 <section>
-<h2>Enfermedades Infecciosas</h2>
+<h2>¿Qué son las Enfermedades Infecciosas?</h2>
 <p>
-Las enfermedades infecciosas son causadas por microorganismos como virus y bacterias.
-Se transmiten por contacto directo, aire, agua o superficies contaminadas.
-Su propagación depende de factores como la tasa de contagio y la recuperación.
+Son enfermedades causadas por microorganismos como virus y bacterias.
+Se transmiten entre personas y su propagación puede estudiarse usando modelos matemáticos.
+La velocidad de contagio depende del contacto social y la recuperación.
 </p>
 </section>
 
 <section>
 <h2>Modelo SIR</h2>
 <p>
-El modelo SIR divide la población en:
+Divide la población en:
 <br><b>S:</b> Susceptibles
 <br><b>I:</b> Infectados
 <br><b>R:</b> Recuperados
 <br><br>
-Se usa para estudiar cómo se propagan las enfermedades y cómo disminuyen con el tiempo.
+Ecuaciones:
+<br>dS/dt = -βSI
+<br>dI/dt = βSI - γI
+<br>dR/dt = γI
 </p>
+
+<p>Ajusta los parámetros:</p>
+
+β (tasa de contagio): <input type="range" min="0.1" max="1" step="0.1" value="0.3" id="beta" class="slider">
+<span id="betaVal">0.3</span>
+
+<br><br>
+
+γ (tasa de recuperación): <input type="range" min="0.05" max="0.5" step="0.05" value="0.1" id="gamma" class="slider">
+<span id="gammaVal">0.1</span>
+
+<br>
+
+<button onclick="simular()">Simular</button>
+
+<div id="sirResultado" class="resultado"></div>
 </section>
 
 <section>
-<h2>Práctica de Ecuaciones Cuadráticas</h2>
-<p>Resuelve la siguiente ecuación:</p>
+<h2>Resolución de Ecuaciones Cuadráticas</h2>
 
 <h3 id="ecuacion"></h3>
 
-<p>Ingresa una de las soluciones:</p>
-<input type="number" id="respuesta">
-<br>
+<button onclick="mostrarPasos()">Mostrar Resolución Paso a Paso</button>
+
+<div id="pasos" style="margin-top:20px;"></div>
+
+<hr>
+
+<p>Ingresa una solución:</p>
+<input type="number" step="any" id="respuesta">
 <button onclick="verificar()">Verificar</button>
 
-<div id="resultado"></div>
-<div id="puntaje"></div>
+<div id="resultado" class="resultado"></div>
+
+<button onclick="generarEjercicio()">Nuevo Ejercicio</button>
+
 </section>
 
 <footer>
@@ -106,9 +145,48 @@ Proyecto realizado por Sandra
 
 <script>
 
+// ---------- MODELO SIR ----------
+let betaSlider = document.getElementById("beta");
+let gammaSlider = document.getElementById("gamma");
+
+betaSlider.oninput = function(){
+    document.getElementById("betaVal").innerText = this.value;
+}
+
+gammaSlider.oninput = function(){
+    document.getElementById("gammaVal").innerText = this.value;
+}
+
+function simular(){
+
+    let S = 990;
+    let I = 10;
+    let R = 0;
+
+    let beta = parseFloat(betaSlider.value);
+    let gamma = parseFloat(gammaSlider.value);
+
+    for(let t=0; t<20; t++){
+
+        let nuevosInfectados = beta * S * I / 1000;
+        let nuevosRecuperados = gamma * I;
+
+        S -= nuevosInfectados;
+        I += nuevosInfectados - nuevosRecuperados;
+        R += nuevosRecuperados;
+    }
+
+    document.getElementById("sirResultado").innerHTML =
+    "Después de la simulación:<br>" +
+    "Susceptibles: " + S.toFixed(0) +
+    "<br>Infectados: " + I.toFixed(0) +
+    "<br>Recuperados: " + R.toFixed(0);
+}
+
+// ---------- ECUACIONES CUADRÁTICAS ----------
 let a, b, c;
 let solucion1, solucion2;
-let puntos = 0;
+let discriminante;
 
 function generarEjercicio(){
 
@@ -116,7 +194,7 @@ function generarEjercicio(){
     b = Math.floor(Math.random()*10)-5;
     c = Math.floor(Math.random()*10)-5;
 
-    let discriminante = b*b - 4*a*c;
+    discriminante = b*b - 4*a*c;
 
     while(discriminante < 0){
         c = Math.floor(Math.random()*10)-5;
@@ -127,32 +205,39 @@ function generarEjercicio(){
     solucion2 = (-b - Math.sqrt(discriminante))/(2*a);
 
     document.getElementById("ecuacion").innerHTML =
-        a + "x² + " + b + "x + " + c + " = 0";
+    a + "x² + " + b + "x + " + c + " = 0";
 
+    document.getElementById("pasos").innerHTML = "";
     document.getElementById("resultado").innerHTML = "";
     document.getElementById("respuesta").value = "";
+}
+
+function mostrarPasos(){
+
+    document.getElementById("pasos").innerHTML =
+    "<b>Paso 1:</b> Identificamos a=" + a + ", b=" + b + ", c=" + c +
+    "<br><br><b>Paso 2:</b> Δ = b² - 4ac = " + discriminante +
+    "<br><br><b>Paso 3:</b> x = (-b ± √Δ) / 2a" +
+    "<br>x₁ = " + solucion1.toFixed(2) +
+    "<br>x₂ = " + solucion2.toFixed(2);
 }
 
 function verificar(){
 
     let user = parseFloat(document.getElementById("respuesta").value);
 
-    if(Math.abs(user - solucion1) < 0.2 || 
+    if(Math.abs(user - solucion1) < 0.2 ||
        Math.abs(user - solucion2) < 0.2){
-        puntos++;
-        document.getElementById("resultado").innerHTML = 
-        "Correcto ✅";
+
+        document.getElementById("resultado").innerHTML =
+        "<span style='color:lightgreen;'>Correcto ✅</span>";
+
     } else {
-        document.getElementById("resultado").innerHTML = 
-        "Incorrecto ❌<br>Soluciones: " 
-        + solucion1.toFixed(2) + " y " 
-        + solucion2.toFixed(2);
+
+        document.getElementById("resultado").innerHTML =
+        "<span style='color:red;'>Incorrecto ❌</span>" +
+        "<br>Revisa los pasos.";
     }
-
-    document.getElementById("puntaje").innerHTML = 
-        "Puntaje: " + puntos;
-
-    setTimeout(generarEjercicio,2000);
 }
 
 generarEjercicio();
