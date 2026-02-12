@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Simulación SIR - Sandra</title>
+
+<style>
+body{
+    margin:0;
+    font-family: 'Courier New', monospace;
+    background: linear-gradient(180deg, #0a0f2c, #111a4d);
+    color:white;
+    text-align:center;
+}
+
+header{
+    padding:40px;
+    animation: aparecer 2s ease-in-out;
+}
+
+h1{
+    color:#00e5ff;
+    text-shadow: 0 0 10px #00e5ff;
+}
+
+.section{
+    background:#1c2466;
+    margin:20px;
+    padding:20px;
+    border-radius:15px;
+    box-shadow:0 0 15px #00e5ff;
+}
+
+button{
+    padding:10px 20px;
+    background:#00e5ff;
+    border:none;
+    border-radius:10px;
+    font-weight:bold;
+    cursor:pointer;
+}
+
+button:hover{
+    background:#00aaff;
+}
+
+.resultado{
+    margin-top:15px;
+    font-size:18px;
+}
+
+footer{
+    margin-top:40px;
+    padding:20px;
+    background:#000;
+    color:#00e5ff;
+}
+
+@keyframes aparecer{
+    from{opacity:0; transform:translateY(-50px);}
+    to{opacity:1; transform:translateY(0);}
+}
+</style>
+</head>
+
+<body>
+
+<header>
+<h1>🏎️ Simulación de Enfermedades - Modelo SIR 🦠</h1>
+<p>Bienvenido a esta experiencia estilo videojuego F1</p>
+</header>
+
+<div class="section">
+<h2>¿Qué es un Modelo?</h2>
+<p>
+Un modelo es una representación matemática o visual de un fenómeno real.
+Nos ayuda a entender cómo funciona algo en la vida real usando números y ecuaciones.
+</p>
+</div>
+
+<div class="section">
+<h2>Modelo SIR</h2>
+<p>
+El modelo SIR divide a la población en:
+<br><br>
+S = Susceptibles (pueden enfermarse)  
+<br>
+I = Infectados  
+<br>
+R = Recuperados  
+<br><br>
+Este modelo usa ecuaciones diferenciales para predecir cómo se propaga una enfermedad.
+</p>
+</div>
+
+<div class="section">
+<h2>Ecuaciones Cuadráticas</h2>
+<p>
+Una ecuación cuadrática tiene la forma:
+<br><br>
+ax² + bx + c = 0
+<br><br>
+Se pueden resolver con la fórmula general:
+<br><br>
+x = (-b ± √(b² - 4ac)) / 2a
+<br><br>
+En modelos epidemiológicos pueden usarse para analizar comportamientos
+y puntos de equilibrio.
+</p>
+</div>
+
+<div class="section">
+<h2>Simulación Interactiva</h2>
+<p>Presiona el botón para simular la propagación:</p>
+
+<button onclick="simular()">Iniciar Simulación</button>
+
+<div class="resultado" id="resultado"></div>
+</div>
+
+<script>
+function simular(){
+    let susceptibles = 100;
+    let infectados = Math.floor(Math.random() * 20) + 1;
+    let recuperados = 0;
+
+    susceptibles -= infectados;
+    recuperados = Math.floor(infectados * 0.5);
