@@ -2,131 +2,188 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Simulación SIR - Sandra</title>
+<title>Simulación Dinámica - Sandra</title>
 
 <style>
 body{
     margin:0;
-    font-family: 'Courier New', monospace;
-    background: linear-gradient(180deg, #0a0f2c, #111a4d);
+    font-family: 'Orbitron', Arial, sans-serif;
+    background: linear-gradient(180deg,#0a0f2c,#121a4a);
     color:white;
     text-align:center;
 }
 
+/* Animación tipo luces de salida */
+.luces{
+    display:flex;
+    justify-content:center;
+    margin-top:20px;
+}
+
+.luz{
+    width:25px;
+    height:25px;
+    border-radius:50%;
+    margin:5px;
+    background:#400;
+    box-shadow:0 0 10px red;
+}
+
+.encendida{
+    background:red;
+    box-shadow:0 0 20px red;
+}
+
 header{
-    padding:40px;
-    animation: aparecer 2s ease-in-out;
+    padding:30px;
 }
 
 h1{
-    color:#00e5ff;
-    text-shadow: 0 0 10px #00e5ff;
+    color:#00f7ff;
+    text-shadow:0 0 15px #00f7ff;
 }
 
 .section{
-    background:#1c2466;
-    margin:20px;
-    padding:20px;
+    background:#1f2a75;
+    margin:20px auto;
+    padding:25px;
+    width:85%;
     border-radius:15px;
-    box-shadow:0 0 15px #00e5ff;
+    box-shadow:0 0 20px #00f7ff;
 }
 
 button{
-    padding:10px 20px;
-    background:#00e5ff;
+    padding:12px 25px;
+    font-size:16px;
+    font-weight:bold;
+    background:#00f7ff;
     border:none;
     border-radius:10px;
-    font-weight:bold;
     cursor:pointer;
 }
 
 button:hover{
-    background:#00aaff;
+    background:#00bcd4;
 }
 
-.resultado{
-    margin-top:15px;
+#datos{
+    margin-top:20px;
     font-size:18px;
 }
 
 footer{
     margin-top:40px;
     padding:20px;
-    background:#000;
-    color:#00e5ff;
-}
-
-@keyframes aparecer{
-    from{opacity:0; transform:translateY(-50px);}
-    to{opacity:1; transform:translateY(0);}
+    background:black;
+    color:#00f7ff;
 }
 </style>
 </head>
-<script>
-function iniciarSimulacion() {
-    alert("La simulación ha iniciado correctamente.");
-}
-</script>
+
 <body>
+
 <header>
-<h1>🏎️ Simulación de Enfermedades - Modelo SIR 🦠</h1>
-<p>Bienvenido a esta experiencia estilo videojuego F1</p>
+<h1>Simulación Matemática de Enfermedades</h1>
+<p>Modelo SIR aplicado dinámicamente</p>
 </header>
 
+<div class="luces">
+<div class="luz" id="l1"></div>
+<div class="luz" id="l2"></div>
+<div class="luz" id="l3"></div>
+<div class="luz" id="l4"></div>
+<div class="luz" id="l5"></div>
+</div>
+
 <div class="section">
-<h2>¿Qué es un Modelo?</h2>
+<h2>Enfermedades Infecciosas</h2>
 <p>
-Un modelo es una representación matemática o visual de un fenómeno real.
-Nos ayuda a entender cómo funciona algo en la vida real usando números y ecuaciones.
+Las enfermedades infecciosas se transmiten entre personas por contacto directo o indirecto.
+Su propagación depende de la interacción social y la capacidad de contagio.
 </p>
 </div>
 
 <div class="section">
 <h2>Modelo SIR</h2>
 <p>
-El modelo SIR divide a la población en:
-<br><br>
-S = Susceptibles (pueden enfermarse)  
-<br>
-I = Infectados  
-<br>
-R = Recuperados  
-<br><br>
-Este modelo usa ecuaciones diferenciales para predecir cómo se propaga una enfermedad.
+Divide la población en Susceptibles (S), Infectados (I) y Recuperados (R).
+El comportamiento se modela con tasas de contagio (β) y recuperación (γ).
 </p>
 </div>
 
 <div class="section">
 <h2>Ecuaciones Cuadráticas</h2>
 <p>
-Una ecuación cuadrática tiene la forma:
-<br><br>
-ax² + bx + c = 0
-<br><br>
-Se pueden resolver con la fórmula general:
-<br><br>
-x = (-b ± √(b² - 4ac)) / 2a
-<br><br>
-En modelos epidemiológicos pueden usarse para analizar comportamientos
-y puntos de equilibrio.
+Forma general: ax² + bx + c = 0.
+Se utilizan para analizar puntos críticos y comportamientos máximos o mínimos
+en modelos matemáticos.
 </p>
 </div>
 
 <div class="section">
-<h2>Simulación Interactiva</h2>
-<p>Presiona el botón para simular la propagación:</p>
-
-<button onclick="simular()">Iniciar Simulación</button>
-
-<div class="resultado" id="resultado"></div>
+<h2>Simulación</h2>
+<button onclick="cuentaRegresiva()">Iniciar Simulación</button>
+<div id="datos"></div>
 </div>
 
 <script>
-function simular(){
-    let susceptibles = 100;
-    let infectados = Math.floor(Math.random() * 20) + 1;
-    let recuperados = 0;
 
-    susceptibles -= infectados;
-    recuperados = Math.floor(infectados * 0.5);
+function cuentaRegresiva(){
+
+let luces = ["l1","l2","l3","l4","l5"];
+let i = 0;
+
+let intervaloLuces = setInterval(function(){
+    document.getElementById(luces[i]).classList.add("encendida");
+    i++;
+    if(i === luces.length){
+        clearInterval(intervaloLuces);
+        setTimeout(iniciarSimulacion,500);
+    }
+},500);
+}
+
+function iniciarSimulacion(){
+
+let S = 990;
+let I = 10;
+let R = 0;
+
+let beta = 0.35;
+let gamma = 0.1;
+
+let tiempo = 0;
+
+let intervalo = setInterval(function(){
+
+    let nuevosInfectados = beta * S * I / 1000;
+    let nuevosRecuperados = gamma * I;
+
+    S -= nuevosInfectados;
+    I += nuevosInfectados - nuevosRecuperados;
+    R += nuevosRecuperados;
+
+    tiempo++;
+
+    document.getElementById("datos").innerHTML =
+    "Tiempo: " + tiempo +
+    "<br>Susceptibles: " + S.toFixed(0) +
+    "<br>Infectados: " + I.toFixed(0) +
+    "<br>Recuperados: " + R.toFixed(0);
+
+    if(tiempo >= 40){
+        clearInterval(intervalo);
+    }
+
+}, 500);
+
+}
+
+</script>
+
+<footer>
+Proyecto realizado por Sandra
+</footer>
+
+</body>
+</html>
